@@ -19,15 +19,5 @@ class HBNBCommand(cmd.cmd):
     def emptyline(self):
         pass
 
-    def do_create(self, line):
-        """creates a class instance"""
-        if not line:
-            print("** class name is missing**")
-        else:
-            if line not in HBNBCommand.class_dict:
-                print("** class doesnt exist **")
-            else:
-                
-
 if __name__ == __main__:
     HBNBCommand.cmdloop()
