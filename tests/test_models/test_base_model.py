@@ -86,9 +86,10 @@ class TestBaseModel_instatiation(unittest.TestCase):
 
     def test_basemodel_save(self):
         bm = BaseModel()
-        created_at = bm.created_at
+        sleep(0.05)
+        updated_at = bm.updated_at
         bm.save()
-        self.assertEqual(bm.created_at, created_at)
+        self.assertLess(updated_at, bm.updated_at)
         
     
     def test_basemodel_to_dict(self):
