@@ -19,8 +19,8 @@ class TestBaseModel_instatiation(unittest.TestCase):
     def test_no_args_instantion(self):
         self.assertEqual(BaseModel, type(BaseModel()))
 
-#    def test_new_instance_stored_in_objects(self):
-#       self.assertIn(BaseModel(), models.storage.all().values())
+    def test_new_instance_stored_in_objects(self):
+        self.assertIn(BaseModel(), models.storage.all().values())
 
     def test_id_is_public_str(self):
         self.assertEqual(str, type(BaseModel().id))
@@ -83,3 +83,19 @@ class TestBaseModel_instatiation(unittest.TestCase):
         self.assertEqual(bm.id, "345")
         self.assertEqual(bm.created_at, dt)
         self.assertEqual(bm.updated_at, dt)
+
+    def test_basemodel_save(self):
+        bm = BaseModel()
+        created_at = bm.created_at
+        bm.save()
+        self.assertEqual(bm.created_at, created_at)
+        
+    
+    def test_basemodel_to_dict(self):
+        bm = BaseModel()
+        bm_dict = bm.to_dict()
+        self.assertIsInstance(bm_dict, dict)
+        self.assertEqual(bm_dict["id"], bm.id)
+        self.assertEqual(bm_dict["created_at"], bm.created_at.isoformat())
+        self.assertEqual(bm_dict["updated_at"], bm.updated_at.isoformat())
+        self.assertEqual(bm_dict["__class__"], "BaseModel")
