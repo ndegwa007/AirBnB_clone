@@ -93,13 +93,14 @@ class HBNBCommand(cmd.Cmd):
         instance_id = args[1]
         key = "{}.{}".format(class_name, instance_id)
         all_instances = models.storage.all()
+        if key not in all_instances.keys():
+            print("** no instance found **")
+            return
         instance = all_instances.pop(key)
         if instance:
             del (instance)
             models.storage.save()
             found = True
-        if not found:
-            print("** no instance found **")
 
     def do_all(self, args):
         """ prints all string rep of all instances """
