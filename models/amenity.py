@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """class that inherits from BaseModel"""
 
-from models.basemodel import BaseModel
+from models.base_model import BaseModel
 
 
 class Amenity(BaseModel):
