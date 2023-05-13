@@ -3,11 +3,18 @@
 from datetime import datetime
 from fabric.api import *
 
+
 def do_pack():
 
     """
     do_pack: function creates a zip file of static files
     into a folder called versions
+
+    Args:
+        no args
+
+    Returns:
+        a zip file with compressed with static files
     """
 
     date_format = "%Y%m%d%H%M%S"
