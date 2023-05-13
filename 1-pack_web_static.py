@@ -6,16 +6,7 @@ from fabric.api import *
 
 def do_pack():
 
-    """do_pack: function creates a zip file of static files
-    into a folder called versions
-
-    Args:
-        no args
-
-    Returns:
-        a zip file with compressed with static files
-    """
-
+    """generates .tgz archive from contents of the web_static folder"""
     date_format = "%Y%m%d%H%M%S"
     now = datetime.utcnow().strftime(date_format)
     file_name = f"versions/web_static_{now}.tgz"
