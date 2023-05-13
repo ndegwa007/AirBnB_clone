@@ -1,7 +1,14 @@
+#!/usr/bin/python3
+"""module has a function that creates zip files from static files"""
 from datetime import datetime
 from fabric.api import *
 
 def do_pack():
+
+    """
+    do_pack: function creates a zip file of static files
+    into a folder called versions
+    """
 
     date_format = "%Y%m%d%H%M%S"
     now = datetime.utcnow().strftime(date_format)
