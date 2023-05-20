@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 # a minimal flask app
 from flask import Flask
-
 app = Flask(__name__)
 
 
@@ -13,4 +12,5 @@ def hello():
 
 
 if __name__ == "__main__":
+    """ main app """
     app.run(host='0.0.0.0', port=5000)
