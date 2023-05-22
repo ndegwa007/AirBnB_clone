@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# a minimal flask app
+"""a minimal flask app"""
 from flask import Flask
 app = Flask(__name__)
 
