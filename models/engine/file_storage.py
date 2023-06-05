@@ -11,6 +11,7 @@ from models.state import State
 from models.amenity import Amenity
 from models.review import Review
 
+
 class FileStorage:
     """Implementation"""
     __file_path = "file.json"
@@ -41,7 +42,8 @@ class FileStorage:
     def save(self):
         """serializes __objects to the JSON file"""
         with open(FileStorage.__file_path, 'w') as f:
-            new_dict = {k: v.to_dict() for k, v in FileStorage.__objects.items()}
+            new_dict = {
+                    k: v.to_dict() for k, v in FileStorage.__objects.items()}
             json.dump(new_dict, f)
 
     def reload(self):
@@ -58,13 +60,13 @@ class FileStorage:
         except Exception:
             pass
 
-#   def delete(self, obj=None):
-#           """Deletes obj from __objects if in else do nothing"""
-#           if obj is not None:
-#               key = obj.__class__.__name__ + '.' + obj.id
-#               if key in self.__objects:
-#                   del self.__objects[key]
-#
+    def delete(self, obj=None):
+        """Deletes obj from __objects if in else do nothing"""
+        if obj is not None:
+            key = obj.__class__.__name__ + '.' + obj.id
+            if key in self.__objects:
+                del self.__objects[key]
+
 #       def get(self, cls, id):
 #           """Gets the object associated with id"""
 #           item = self.all(cls)
