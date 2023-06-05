@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """ cmd module """
 import cmd
-import models
 from models.base_model import BaseModel
 from models.user import User
 from models.place import Place
@@ -9,6 +8,8 @@ from models.state import State
 from models.amenity import Amenity
 from models.review import Review
 from models.city import City
+import models
+import shlex
 
 classes = {
         "BaseModel": BaseModel,
@@ -26,9 +27,10 @@ class HBNBCommand(cmd.Cmd):
 
     prompt = "(hbnb)"
 
-    def do_EOF(self):
+    def do_EOF(self, arg):
         """ exit the program """
-        return True
+        print()
+        exit()
 
     def do_quit(self, args):
         """ Quit command to exit the program \n"""
@@ -37,21 +39,41 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         pass
 
-    def do_create(self, args):
-        """ creates new instance """
+    def _key_value_parser(self, args):
+        """creates a dictionary from a list of strings"""
+        new_dict = {}
+        for arg in args:
+            if "=" in arg:
+                kvp = arg.split('=', 1)
+                key = kvp[0]
+                value = kvp[1]
+                if value[0] == value[-1] == '"':
+                    value = shlex.split(value)[0].replace('_', ' ')
+                else:
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        try:
+                            value = float(value)
+                        except ValueError:
+                            continue
+                new_dict[key] = value
+        return new_dict
 
-        args = args.split()
-
-        if not args:
+    def do_create(self, arg):
+        """ Create an object of given parameters"""
+        args = arg.split()
+        if len(args) == 0:
             print("** class name missing **")
-            return
-        class_name = args[0]
-        if class_name not in classes:
+            return False
+        if args[0] in classes:
+            new_dict = self._key_value_parser(args[1:])
+            instance = classes[args[0]](**new_dict)
+        else:
             print("** class doesn't exist **")
-            return
-        new_instance = classes[class_name]()
-        new_instance.save()
-        print(new_instance.id)
+            return False
+        print(instance.id)
+        instance.save()
 
     def do_show(self, args):
         """ prints the string representation of an instance """

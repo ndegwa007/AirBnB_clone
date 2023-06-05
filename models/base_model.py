@@ -1,83 +1,84 @@
 #!/usr/bin/python3
-"""
-class base model
-"""
-
+"""Base model class"""
 from datetime import datetime
-import uuid
+# from os import getenv
+# from sqlalchemy import String, Integer, Column, ForeignKey, DateTime
+# from sqlalchemy.ext.declarative import declarative_base
+import hashlib
 import models
+import uuid
+
+
+# Base = declarative_base()
 
 
 class BaseModel:
+    """defines all common attributes/methods for other classes"""
+    # id = Column(String(60), nullable=False, primary_key=True)
+    # created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+    # updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
 
-    """
-    BaseModel that defines all common attributes/methods for other classes
-    PUBLIC INSTANCE ATTRIBUTES:
-    id: string - assign with an uuid when an instance is created
-         uuid.uuid4(): generate a unique id but cant forget to
-         convert to string. The goal is to have a unique id for each BaseModel
-    created_at:  datetime - assign with the current datetime when an instance
-                 is created
-    updated_at: datetime - assign with the current datetime when an instance
-                is created and it will be updated every time you change your
-                object
-    __str__: should print: [<class name>] (<self.id>) <self.__dict__>
-    PUBLIC INSTANCE METHODS
-    save(self):
-    to_dict(self):
-    """
     def __init__(self, *args, **kwargs):
-        """ initialization """
+        """Initialize Base Model class
+        Args:
+            args(tuple): tuple argument. Won't be used here
+            kwargs(dict): object dictionary passed
+        Attributes:
+            id: unique number for identification
+            created_at: shows when the object was created
+            updated_at: shows when the object was last updated
+            storage
+        """
         if kwargs:
             for key, value in kwargs.items():
                 if key == "created_at" or key == "updated_at":
-                    setattr(self, key, datetime.strptime(value,
-                            "%Y-%m-%dT%H:%M:%S.%f"))
-                elif key == "__class__":
-                    setattr(self, key, type(self))
-                else:
+                    value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+                if key != "__class__" and key != '_sa_instance_state':
+                    if key == 'password':
+                        value = hashlib.md5(value.encode('utf-8')).hexdigest()
                     setattr(self, key, value)
+            if "id" not in kwargs:
+                self.id = str(uuid.uuid4())
+            if "created_at" not in kwargs:
+                self.created_at = datetime.now()
+            if "updated_at" not in kwargs:
+                self.updated_at = datetime.now()
         else:
             self.id = str(uuid.uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = datetime.now()
-            models.storage.new(self)
+            self.created_at = self.updated_at = datetime.now()
 
     def __str__(self):
-        """
-        print str representation
-        [<class name>] (self.id) <self.__dict__>
-        """
-
+        """returns string representation of an object"""
         return "[{}] ({}) {}".format(self.__class__.__name__,
-                                     self.id,
-                                     self.__dict__)
+                                     self.id, self.__dict__)
+
+    def __repr__(self):
+        """returns official string representation"""
+        return self.__str__()
 
     def save(self):
-        """
-        updates the public instance
-        attribute updated_at with current datetime
-        """
+        """updates the object date"""
         self.updated_at = datetime.now()
+        models.storage.new(self)
         models.storage.save()
 
     def to_dict(self):
-        """
-        This method will be the first piece of the serialization/
-        deserialization process: create a dictionary representation
-        with simple object type of our BaseModel.
-        By using self.__dict__, only instance attributes set will be returned.
-        A key __class__ must be added to this dictionary with the class name
-        of the object.
-        created_at and updated_at must be converted to string object in
-        ISO format.
-        Format: %Y-%m-%dT%H:%M:%S.%f (ex: 2017-06-14T22:31:03.285259)
-        Returns: a dictionary containing all keys/values of __dict__
-                 of the instance.
-        """
+        """returns a dictionary containing all keys/values\
+                of __dict__ instance"""
+        objec = {}
+        for key in self.__dict__:
+            if key == 'created_at' or key == 'updated_at':
+                objec[key] = self.__dict__[key].isoformat()
+            else:
+                objec[key] = self.__dict__[key]
+        objec['__class__'] = self.__class__.__name__
+        if "_sa_instance_state" in objec:
+            del objec["_sa_instance_state"]
+        if "password" in objec:
+            string = objec["password"].encode('utf-8')
+            objec["password"] = hashlib.md5(string).hexdigest()
+        return objec
 
-        new_dict = dict(self.__dict__)
-        new_dict["__class__"] = type(self).__name__
-        new_dict["created_at"] = new_dict["created_at"].isoformat()
-        new_dict["updated_at"] = new_dict["updated_at"].isoformat()
-        return new_dict
+    def delete(self):
+        """Returns current instance from the storage"""
+        models.storage.delete(self)
