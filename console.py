@@ -94,7 +94,10 @@ class HBNBCommand(cmd.Cmd):
         for key, instance in all_instances.items():
             if class_name in key and class_id in key:
                 found = True
-                print(instance)
+                instance_dict = instance.to_dict()
+                instance_dict.pop('_sa_instance_state', None)
+                print("[{}]({}) {}".format(
+                    class_name, class_id, instance_dict))
                 break
         if not found:
             print("** no instance found **")
@@ -130,23 +133,31 @@ class HBNBCommand(cmd.Cmd):
             found = True
 
     def do_all(self, args):
-        """ prints all string rep of all instances """
+        """Prints the string representation of all instances"""
 
-        args = args.split(" ")
+        args = args.split()
         class_name = args[0]
+
         if class_name:
             if class_name not in classes:
                 print("** class doesn't exist **")
                 return
-        else:
-            all_instances = models.storage.all()
-            for key, instance in all_instances.items():
-                print([str(instance)])
-        if class_name in classes:
             all_instances = models.storage.all()
             for key, instance in all_instances.items():
                 if class_name in key:
-                    print([str(instance)])
+                    instance_dict = instance.to_dict()
+                    # Remove the '_sa_instance_state' attribute
+                    instance_dict.pop('_sa_instance_state', None)
+                    print("[{}] ({}) {}".format(
+                        class_name, instance.id, instance_dict))
+        else:
+            all_instances = models.storage.all()
+            for key, instance in all_instances.items():
+                instance_dict = instance.to_dict()
+                # Remove the '_sa_instance_state' attribute
+                instance_dict.pop('_sa_instance_state', None)
+                print("[{}] ({}) {}".format(
+                    instance.__class__.__name__, instance.id, instance_dict))
 
     def do_update(self, args):
         """ update an instance based on a class name and id """
