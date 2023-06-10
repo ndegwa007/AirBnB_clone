@@ -39,8 +39,8 @@ class DBStorage:
                 '/' +
                 HBNB_MYSQL_DB)
 
-    if HBNB_ENV == 'test':
-        Base.metadata.drop_all(bind=self.__engine)
+        if HBNB_ENV == 'test':
+            Base.metadata.drop_all(bind=self.__engine)
 
     def all(self, cls=None):
         """query on the current db session"""
