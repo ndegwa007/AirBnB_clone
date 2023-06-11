@@ -9,7 +9,8 @@ import os.path
 from fabric.api import put, run, env, local
 
 env.hosts = ['54.210.51.207', '54.90.53.12']
-
+env.key_filename = "~/.ssh/school"
+env.user = "ubuntu"
 
 def do_pack():
     """
