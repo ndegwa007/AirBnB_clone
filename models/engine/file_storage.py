@@ -81,5 +81,6 @@ class FileStorage:
 #               return len(self.all(cls))
 #           return (len(self.all()))
 #
-#       def close(self):
-#           self.reload()
+    def close(self):
+        """deserialize json file to objects"""
+        self.reload()
