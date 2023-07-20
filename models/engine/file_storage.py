@@ -67,20 +67,20 @@ class FileStorage:
             if key in self.__objects:
                 del self.__objects[key]
 
-#       def get(self, cls, id):
-#           """Gets the object associated with id"""
-#           item = self.all(cls)
-#           for value in item.values():
-#               if value.id == id:
-#                   return value
-#           return None
-#
-#       def count(self, cls=None):
-#           """Counts the number of items of a particular class"""
-#           if cls is not None:
-#               return len(self.all(cls))
-#           return (len(self.all()))
-#
+    def get(self, cls, id):
+        """Gets the object associated with id"""
+        item = self.all(cls)
+        for value in item.values():
+            if value.id == id:
+                return value
+        return None
+
+    def count(self, cls=None):
+        """Counts the number of items of a particular class"""
+        if cls is not None:
+            return len(self.all(cls))
+        return (len(self.all()))
+
     def close(self):
         """deserialize json file to objects"""
         self.reload()

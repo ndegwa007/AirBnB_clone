@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """database storage engine"""
+import models
 from os import getenv
 from models.base_model import Base
 from models.user import User
@@ -78,3 +79,27 @@ class DBStorage:
     def close(self):
         """call remove() method on the private session attribute"""
         self.__session.close()
+
+    def get(self, cls, id):
+        """returns obj based on class and its id"""
+        if cls not in classes.values():
+            return None
+
+
+        all_cls = models.storage.all(cls)
+        for value in all_cls.values():
+            if value.id == id:
+                return value
+        return None
+
+    def count(self, cls=None):
+        """returns number of obj in storage matching the given class"""
+        all_cls = classes.values()
+        count = 0
+        if not cls:
+            return count
+            for clas in all_cls:
+                count += len(models.storage.all(clas).values())
+        else:
+            count += len(models.storage.all(cls).values())
+        return count
