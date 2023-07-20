@@ -1,4 +1,3 @@
 *.pyc
 /versions
 /venv
-/packs.egg-info
